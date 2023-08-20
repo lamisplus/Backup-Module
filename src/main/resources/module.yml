@@ -1,0 +1,19 @@
+basePackage: org.lamisplus.modules.backup
+name: BackupModule
+store: true
+menus:
+  - icon: fa fa-virus
+    disabled: false
+    name: Backup
+    state: backup
+    url: /across/resources/static/backup/index.html
+umdLocation: /across/resources/static/backup/index.html
+webModules:
+  - breadcrumb: Backup Module
+    name: BackupModule
+    path: backup
+    position: 99
+permissions:
+  - name: create_backup
+    description: create backup
+    moduleName: BackupModule
