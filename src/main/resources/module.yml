@@ -2,7 +2,7 @@ basePackage: org.lamisplus.modules.backup
 name: BackupModule
 store: true
 menus:
-  - icon: fa fa-virus
+  - icon: fa fa-database
     disabled: false
     name: Backup
     state: backup
