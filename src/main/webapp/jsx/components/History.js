@@ -5,6 +5,7 @@ import axios from "axios";
 import { token as token, url as baseUrl } from "../../api";
 import Button from "@mui/material/Button";
 import DownloadIcon from "@mui/icons-material/Download";
+import { ToastContainer, toast } from "react-toastify";
 import RestoreIcon from "@mui/icons-material/Restore";
 
 import AddBox from "@material-ui/icons/AddBox";
@@ -98,23 +99,44 @@ const History = (props) => {
 
   const handleDownload = (row) => {
     console.log("download", row);
-    axios
-      .get(`${baseUrl}database/download/${row}`, {
-        headers: { Authorization: `Bearer ${token}` },
+
+    axios({
+      url: `${baseUrl}database/download/${row}`,
+      method: "GET",
+      responseType: "blob",
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((response) => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", row);
+        document.body.appendChild(link);
+        link.click();
+        toast.success("Backup Downloaded successfully");
+        return;
       })
-      .then((response) => response)
-      .catch((err) => console.log(err));
+      .catch((error) => {
+        toast.error("Error: Could not download file!");
+      });
+
+    // axios
+    //   .get(`${baseUrl}database/download/${row}`, {
+    //     headers: { Authorization: `Bearer ${token}` },
+    //   })
+    //   .then((response) => console.log(response))
+    //   .catch((err) => console.log(err));
   };
 
-  const restoreDownload = (row) => {
-    console.log("restore", row);
-    axios
-      .get(`${baseUrl}database/restore/${row}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((response) => response)
-      .catch((err) => console.log(err));
-  };
+  // const restoreDownload = (row) => {
+  //   console.log("restore", row);
+  //   axios
+  //     .get(`${baseUrl}database/restore/${row}`, {
+  //       headers: { Authorization: `Bearer ${token}` },
+  //     })
+  //     .then((response) => response)
+  //     .catch((err) => console.log(err));
+  // };
 
   return (
     <div>
