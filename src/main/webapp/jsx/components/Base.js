@@ -8,6 +8,7 @@ import History from "./History";
 
 const Base = () => {
   const [databaseBackup, setDatabaseBackup] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const pullDatabaseBackup = () => {
     axios
@@ -26,7 +27,11 @@ const Base = () => {
       <Grid container spacing={1}>
         <br />
         <Grid item xs={12} md={12}>
-          <Backup pullDatabaseBackup={pullDatabaseBackup} />
+          <Backup
+            pullDatabaseBackup={pullDatabaseBackup}
+            isLoading={isLoading}
+            setIsLoading={setIsLoading}
+          />
         </Grid>
         {/* <Grid item xs={12} md={6}>
           <Paper elevation={3} variant="outlined" square>

@@ -3,16 +3,15 @@ import { CircularProgress, Snackbar } from "@mui/material";
 import MatButton from "@material-ui/core/Button";
 import axios from "axios";
 import { token as token, url as baseUrl } from "../../api";
-
+import { toast } from "react-toastify";
 import BackupIcon from "@mui/icons-material/Backup";
 
 const Backup = (props) => {
-  const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
 
   const handleBackup = () => {
-    setIsLoading(true);
+    props.setIsLoading(true);
     // Call your backend API for backup here
     try {
       console.log("backup Db..");
@@ -21,15 +20,18 @@ const Backup = (props) => {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => {
-          console.log(response);
-          setIsLoading(false);
+          //console.log(response);
+          props.setIsLoading(false);
           props.pullDatabaseBackup();
+          toast.success("Database Backup successfully");
+        })
+        .catch((error) => {
+          toast.error("Error: Database Backup failed!");
+          props.setIsLoading(false);
         });
       setIsSuccess(true);
     } catch (error) {
       setIsError(true);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -39,12 +41,12 @@ const Backup = (props) => {
         variant="contained"
         startIcon={<BackupIcon />}
         onClick={handleBackup}
-        disabled={isLoading}
+        disabled={isSuccess}
         style={{ backgroundColor: "#014d88", color: "#fff", float: "right" }}
       >
         {"Backup Database"}
       </MatButton>
-      {isLoading ? <CircularProgress size={24} /> : "Backup Database"}
+      {props.isLoading ? <CircularProgress size={24} /> : " "}
     </div>
   );
 };
