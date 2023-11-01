@@ -5,6 +5,9 @@ import axios from "axios";
 import { token as token, url as baseUrl } from "../../api";
 import { toast } from "react-toastify";
 import BackupIcon from "@mui/icons-material/Backup";
+import LoadingMessageModal from "./parts/LoadingMessageModal";
+
+
 
 const Backup = (props) => {
   const [isSuccess, setIsSuccess] = useState(false);
@@ -46,7 +49,9 @@ const Backup = (props) => {
       >
         {"Backup Database"}
       </MatButton>
-      {props.isLoading ? <CircularProgress size={24} /> : " "}
+            {/* {<LoadingMessageModal   show={true} /> } */}
+
+      {props.isLoading && <LoadingMessageModal   show={true} message='Backing Up Database...'/>  }
     </div>
   );
 };

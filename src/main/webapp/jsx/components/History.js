@@ -7,7 +7,7 @@ import Button from "@mui/material/Button";
 import DownloadIcon from "@mui/icons-material/Download";
 import { ToastContainer, toast } from "react-toastify";
 import RestoreIcon from "@mui/icons-material/Restore";
-
+import LoadingMessageModal from "./parts/LoadingMessageModal";
 import AddBox from "@material-ui/icons/AddBox";
 import ArrowUpward from "@material-ui/icons/ArrowUpward";
 import Check from "@material-ui/icons/Check";
@@ -93,13 +93,13 @@ const useStyles = makeStyles((theme) => ({
 
 const History = (props) => {
   const classes = useStyles();
-  const [loading, setLoading] = useState("");
+  const [loading, setLoading] = useState(false);
 
   console.log(props);
 
   const handleDownload = (row) => {
     console.log("download", row);
-
+    setLoading(true)
     axios({
       url: `${baseUrl}database/download/${row}`,
       method: "GET",
@@ -107,6 +107,8 @@ const History = (props) => {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((response) => {
+        setLoading(false)
+
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
         link.href = url;
@@ -117,6 +119,8 @@ const History = (props) => {
         return;
       })
       .catch((error) => {
+        setLoading(false)
+
         toast.error("Error: Could not download file!");
       });
 
@@ -148,7 +152,7 @@ const History = (props) => {
           { title: "File Name", field: "filename" },
           { title: "Action", field: "actions" },
         ]}
-        isLoading={loading}
+        // isLoading={loading}
         data={props.databaseBackup.map((row) => ({
           filename: row,
           actions: (
@@ -202,6 +206,8 @@ const History = (props) => {
         //onChangePage={handleChangePage}
         //localization={localization}
       />
+
+      {loading && <LoadingMessageModal   show={true} message='Downloading...'/> } 
     </div>
   );
 };
