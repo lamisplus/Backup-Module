@@ -17,7 +17,7 @@ const Backup = (props) => {
     props.setIsLoading(true);
     // Call your backend API for backup here
     try {
-      console.log("backup Db..");
+      //console.log("backup Db..");
       axios
         .get(`${baseUrl}database/backup`, {
           headers: { Authorization: `Bearer ${token}` },
