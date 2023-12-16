@@ -5,10 +5,14 @@ import { token as token, url as baseUrl } from "../../api";
 import Backup from "./Backup";
 import Restore from "./Restore";
 import History from "./History";
+import useAuth from "./hooks/useAuth";
 
 const Base = () => {
   const [databaseBackup, setDatabaseBackup] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  const userDetails = useAuth();
+  const currentOrganisationUnitName = userDetails.userDetails?.currentOrganisationUnitName;
 
   const pullDatabaseBackup = () => {
     axios
@@ -21,6 +25,10 @@ const Base = () => {
   useEffect(() => {
     pullDatabaseBackup();
   }, []);
+
+    const updatedDatabaseBackup = databaseBackup.map(
+      (backupItem) => currentOrganisationUnitName + "_" + backupItem
+    );
 
   return (
     <Container maxWidth="xl">
@@ -40,7 +48,7 @@ const Base = () => {
         </Grid> */}
         <Grid item xs={12} md={12}>
           <br />
-          <History databaseBackup={databaseBackup} />
+          <History databaseBackup={updatedDatabaseBackup} />
         </Grid>
       </Grid>
     </Container>

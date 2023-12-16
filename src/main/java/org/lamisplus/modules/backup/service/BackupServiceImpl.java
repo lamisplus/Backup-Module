@@ -6,6 +6,14 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.lamisplus.modules.backup.utility.ConstantUtility;
+import org.lamisplus.modules.base.domain.dto.UserDTO;
+import org.lamisplus.modules.base.domain.entities.ApplicationUserOrganisationUnit;
+
+import org.lamisplus.modules.base.domain.entities.OrganisationUnit;
+import org.lamisplus.modules.base.domain.entities.User;
+import org.lamisplus.modules.base.domain.repositories.OrganisationUnitRepository;
+import org.lamisplus.modules.base.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -115,9 +123,8 @@ public class BackupServiceImpl implements BackupService {
     public int backupPGSQL(boolean restore) {
         int exitCode = -1;
         try {
-            log.info("Backup started");
             initPgBackup();
-            String directory = ConstantUtility.BACKUP_BASE_DIR;
+            String directory =  ConstantUtility.BACKUP_BASE_DIR;
             String pgFileDir = ConstantUtility.BASE_DIR + File.separator + "pg";
             Map<String, String> mapper = getDatabaseProperties();
             ProcessBuilder processBuilder;
@@ -131,7 +138,7 @@ public class BackupServiceImpl implements BackupService {
                 if (SystemUtils.IS_OS_WINDOWS) {
                     exec = pgFileDir + File.separator + exec + ".exe";
                 }
-                String buffer = directory + BACKUP_NAME + date + ".sql";
+                String buffer = directory + BACKUP_NAME  + date + ".sql";
                 if (restore) {
                     buffer = "restore.sql";
                 }
@@ -145,6 +152,7 @@ public class BackupServiceImpl implements BackupService {
             }
         } catch (Exception x) {
             x.printStackTrace();
+
             log.error("catch error: {}", x.getMessage());
         }
 
@@ -223,7 +231,7 @@ public class BackupServiceImpl implements BackupService {
                 int counter = 0;
                 while ((line = br.readLine()) != null) {
                     counter++;
-                   log.info("Process Output Line {}: {}", counter, line);
+                    log.info("Process Output Line {}: {}", counter, line);
                 }
             }
             exitCode = process.waitFor();
@@ -369,12 +377,12 @@ public class BackupServiceImpl implements BackupService {
                 Resource resource = resourceLoader.getResource("classpath:" + fileInputName);
                 try (InputStream is = resource.getInputStream();//BackupServiceImpl.class.getClassLoader().getResourceAsStream(fileInputName);
                      FileOutputStream fos = new FileOutputStream(pgFileDir + File.separator + file)) {
-                     if (is != null) {
-                         log.info("Copying file; {}", file);
-                         IOUtils.copyLarge(is, fos);
-                     } else {
-                         log.error("Error copying file. something went wrong filename: {}",fileInputName);
-                     }
+                    if (is != null) {
+                        log.info("Copying file; {}", file);
+                        IOUtils.copyLarge(is, fos);
+                    } else {
+                        log.error("Error copying file. something went wrong filename: {}",fileInputName);
+                    }
                 } catch (IOException e) {
                     log.info("Error message: {}", e.getMessage());
                     e.printStackTrace();
@@ -394,5 +402,21 @@ public class BackupServiceImpl implements BackupService {
 
         return (dotIndex == -1) ? "" : fileName.substring(dotIndex + 1);
     }
+
+
+//    public  String getLoggedCurrentOrganisationUnitName() {
+//        log.info("Getting current organisation unit name");
+//        Optional<User> userOptional = userService.getUserWithRoles();
+//        log.info("User: {}", userOptional);
+//        return userOptional.map(u -> {
+//                    OrganisationUnit organisationUnit = u.getOrganisationUnitByCurrentOrganisationUnitId();
+//                    if (organisationUnit != null) {
+//                        return organisationUnit.getName();
+//                    } else {
+//                        return "default";
+//                    }
+//                })
+//                .orElse("default");
+//    }
 
 }
