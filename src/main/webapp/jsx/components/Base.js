@@ -21,6 +21,7 @@ const Base = () => {
       })
       .then((response) => setDatabaseBackup(response.data));
   };
+      console.log("data-1", databaseBackup)
 
   useEffect(() => {
     pullDatabaseBackup();
@@ -29,6 +30,8 @@ const Base = () => {
     const updatedDatabaseBackup = databaseBackup.map(
       (backupItem) => currentOrganisationUnitName + "_" + backupItem
     );
+  
+    console.log("data-2", updatedDatabaseBackup)
 
   return (
     <Container maxWidth="xl">

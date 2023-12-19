@@ -57,7 +57,7 @@ public class BackupServiceImpl implements BackupService {
     private static final String USER_NAME = "username";
     private static final String DATABASE = "database";
     private static final String PORT = "port";
-    SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHH");
+    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     SimpleDateFormat alternateDf = new SimpleDateFormat("yyyyMMdd");
 
     public BackupServiceImpl(JdbcTemplate jdbcTemplate, ResourceLoader resourceLoader) {
@@ -123,8 +123,9 @@ public class BackupServiceImpl implements BackupService {
     public int backupPGSQL(boolean restore) {
         int exitCode = -1;
         try {
+            log.info("Backup started");
             initPgBackup();
-            String directory =  ConstantUtility.BACKUP_BASE_DIR;
+            String directory = ConstantUtility.BACKUP_BASE_DIR;
             String pgFileDir = ConstantUtility.BASE_DIR + File.separator + "pg";
             Map<String, String> mapper = getDatabaseProperties();
             ProcessBuilder processBuilder;
@@ -138,7 +139,7 @@ public class BackupServiceImpl implements BackupService {
                 if (SystemUtils.IS_OS_WINDOWS) {
                     exec = pgFileDir + File.separator + exec + ".exe";
                 }
-                String buffer = directory + BACKUP_NAME  + date + ".sql";
+                String buffer = directory + BACKUP_NAME + date + ".sql";
                 if (restore) {
                     buffer = "restore.sql";
                 }
@@ -152,7 +153,6 @@ public class BackupServiceImpl implements BackupService {
             }
         } catch (Exception x) {
             x.printStackTrace();
-
             log.error("catch error: {}", x.getMessage());
         }
 

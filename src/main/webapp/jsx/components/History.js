@@ -23,6 +23,7 @@ import Remove from "@material-ui/icons/Remove";
 import SaveAlt from "@material-ui/icons/SaveAlt";
 import Search from "@material-ui/icons/Search";
 import ViewColumn from "@material-ui/icons/ViewColumn";
+import useAuth from "./hooks/useAuth";
 
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -95,31 +96,40 @@ const History = (props) => {
   const classes = useStyles();
   const [loading, setLoading] = useState(false);
 
-  console.log(props);
+    const userDetails = useAuth();
+    const currentOrganisationUnitName =
+    userDetails.userDetails?.currentOrganisationUnitName;
 
-  const handleDownload = (row) => {
-    console.log("download", row);
+    const handleDownload = (row) => {
+   
+    const modifiedRow = row.replace(/^[^_]*_/, "");
+
     setLoading(true)
     axios({
-      url: `${baseUrl}database/download/${row}`,
+      url: `${baseUrl}database/download/${modifiedRow}`,
       method: "GET",
       responseType: "blob",
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((response) => {
-        setLoading(false)
+        setLoading(false);
 
         const url = window.URL.createObjectURL(new Blob([response.data]));
+
         const link = document.createElement("a");
+
         link.href = url;
-        link.setAttribute("download", row);
+
+        link.setAttribute("download", currentOrganisationUnitName + "_" + modifiedRow);
         document.body.appendChild(link);
         link.click();
+
+         document.body.removeChild(link);
         toast.success("Backup Downloaded successfully");
         return;
       })
       .catch((error) => {
-        setLoading(false)
+        setLoading(false);
 
         toast.error("Error: Could not download file!");
       });
