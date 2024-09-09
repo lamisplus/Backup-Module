@@ -8,6 +8,7 @@ menus:
     state: backup
     url: /across/resources/static/backup/index.html
 umdLocation: /across/resources/static/backup/index.html
+gitHubLink: https://api.github.com/repos/lamisplus/Backup-Module/releases/latest
 webModules:
   - breadcrumb: Backup Module
     name: BackupModule
